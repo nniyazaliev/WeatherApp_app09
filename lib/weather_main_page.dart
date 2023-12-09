@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:app_09/city_page.dart';
 import 'package:app_09/geolocator_sevices.dart';
 import 'package:app_09/weather_services.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,38 @@ class WeatherMainPage extends StatefulWidget {
 
 class _WeatherMainPageState extends State<WeatherMainPage> {
   String? name;
+  late String surname;
   Map<String, dynamic> weatherData = {};
+
+  kolaLaypKel1(String akcha) {
+    return 'kola';
+  }
+
+  kolaLaypKel2([String? akcha]) {
+    return 'kola';
+  }
+
+  kolaLaypKel3({required String akcha}) {
+    return 'kola';
+  }
+
+  kolaLaypKel4({String? akcha}) {
+    return 'kola';
+  }
 
   @override
   void didChangeDependencies() async {
     log('name - $name');
     await getWeatherByLocation();
     super.didChangeDependencies();
+
+    kolaLaypKel1('1 som');
+    kolaLaypKel2('1 som');
+    kolaLaypKel2();
+
+    kolaLaypKel3(akcha: '1 som');
+    kolaLaypKel4(akcha: '1 som');
+    kolaLaypKel4();
   }
 
   Future<void> getWeatherByLocation() async {
@@ -29,10 +55,14 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     if (position != null) {
       weatherData = await WeatherServices().getWeatherByLocation(position);
 
-      setState(() {
-        name = 'Azamat';
-      });
+      setState(() {});
     } else {}
+  }
+
+  Future<void> getWeatherByCity(String city) async {
+    weatherData = await WeatherServices().getWeatherByCityName(city);
+
+    setState(() {});
   }
 
   @override
@@ -77,7 +107,18 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                             label: SizedBox(),
                           ),
                           TextButton.icon(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final String result =
+                                  await Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                return CityPage();
+                              }));
+
+                              if (result.isNotEmpty) {
+                                await getWeatherByCity(result);
+                              }
+                              log('result - $result');
+                            },
                             icon: SvgPicture.asset(
                               'assets/vectors/city.svg',
                               color: Colors.white,
